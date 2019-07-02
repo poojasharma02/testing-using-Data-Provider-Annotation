@@ -1,0 +1,62 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+public class TestNGparameter {
+
+ WebDriver driver;
+ 
+ @BeforeTest
+ public void atBefore() throws Exception{
+  driver = new FirefoxDriver();
+  driver.manage().window().maximize();
+ }
+ 
+ @Test(dataProvider = "testData")          //Calling Data Provider
+ public void atTest(String url, String userID_locator, String userID, String passwd_locator, String passwd, String signIN_locator) throws Exception{
+  
+  String expected_PageTitle = "Inbox";   //Expected Result
+  
+  driver.get(url);
+  Thread.sleep(1000);
+  System.out.println(driver.getTitle());   
+  
+  driver.findElement(By.id(userID_locator)).sendKeys(userID);
+  driver.findElement(By.id(passwd_locator)).sendKeys(passwd);
+  driver.findElement(By.id(signIN_locator)).click();
+  Thread.sleep(1000);
+  
+  String actual_PageTitle = driver.getTitle();  //Actual Result
+  
+  Assert.assertEquals(actual_PageTitle, expected_PageTitle);  //Compare actual with expected result
+  
+ }
+ 
+ @DataProvider(name = "testData")         //Declare Data Provider
+ public Object[][] methodDataProvider() throws Exception{
+  
+  Object [][]xData = new Object[1][6];
+  
+  xData[0][0] = "http://www.gmail.com";     //url
+  xData[0][1] = "Email";                            // userID_locator 
+  xData[0][2] = "Gmail_User";                    // userID 
+  xData[0][3] = "Passwd";                          // passwd_locator
+  xData[0][4] = "Password";                       // passwd
+  xData[0][5] = "signIn";                           //signIN_locator
+     
+  return xData;
+ }
+ 
+ @AfterTest
+ public void atAfter() throws Exception{
+  
+  driver.quit();
+ }
+}
+
+		
